@@ -9,7 +9,7 @@
 
 **Crafted with AI | Powered by Innovation**
 
-[Live Demo](https://paonglabs.dev) • [GitHub](https://github.com/paong/portfolio-3d)
+[Live Demo](https://farhanturu.github.io/portfolio-3d/) • [GitHub](https://github.com/farhanturu/portfolio-3d)
 
 </div>
 
@@ -43,7 +43,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/paong/portfolio-3d.git
+git clone https://github.com/farhanturu/portfolio-3d.git
 
 # Navigate to project
 cd portfolio-3d
@@ -101,7 +101,7 @@ Modify sphere properties in `src/App.jsx`:
 
 ## 📜 License
 
-MIT License © 2024 [PaongLabs](https://github.com/paong)
+MIT License © 2024 [PaongLabs](https://github.com/farhanturu)
 
 ---
 
