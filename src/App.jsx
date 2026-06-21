@@ -1,33 +1,44 @@
 import { useState, useEffect, useRef, Suspense } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Float, MeshDistortMaterial, Sphere, Environment, Stars, Text3D, Center } from '@react-three/drei'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
-import * as THREE from 'three'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { Float, MeshDistortMaterial, Sphere, Stars, Environment } from '@react-three/drei'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const HeroScene = () => {
   const meshRef = useRef()
-  const { viewport } = useThree()
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.1
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.15
+      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.15
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.1
     }
   })
 
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#6366f1" />
-      <pointLight position={[-10, -10, -5]} intensity={0.5} color="#a855f7" />
-      <spotLight position={[0, 10, 0]} angle={0.3} penumbra={1} intensity={1} color="#ec4899" />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={0.8} color="#f97316" />
+      <pointLight position={[-10, -10, -5]} intensity={0.4} color="#06b6d4" />
+      <spotLight position={[0, 10, 0]} angle={0.4} penumbra={1} intensity={0.6} color="#f43f5e" />
 
-      <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5}>
-        <Sphere ref={meshRef} args={[1.5, 64, 64]} position={[2, 0, 0]}>
+      <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.4}>
+        <Sphere ref={meshRef} args={[1.8, 64, 64]} position={[2.5, 0, 0]}>
           <MeshDistortMaterial
-            color="#6366f1"
+            color="#f97316"
             attach="material"
-            distort={0.4}
+            distort={0.35}
+            speed={1.5}
+            roughness={0.3}
+            metalness={0.7}
+          />
+        </Sphere>
+      </Float>
+
+      <Float speed={1.6} rotationIntensity={0.3} floatIntensity={0.6}>
+        <Sphere args={[0.9, 32, 32]} position={[-2.8, 1.8, -1]}>
+          <MeshDistortMaterial
+            color="#06b6d4"
+            attach="material"
+            distort={0.25}
             speed={2}
             roughness={0.2}
             metalness={0.8}
@@ -35,96 +46,45 @@ const HeroScene = () => {
         </Sphere>
       </Float>
 
-      <Float speed={2} rotationIntensity={0.5} floatIntensity={0.8}>
-        <Sphere args={[0.8, 32, 32]} position={[-2.5, 1.5, -1]}>
+      <Float speed={1.4} rotationIntensity={0.25} floatIntensity={0.5}>
+        <Sphere args={[0.6, 32, 32]} position={[-1.8, -1.8, 0.5]}>
           <MeshDistortMaterial
-            color="#a855f7"
-            attach="material"
-            distort={0.3}
-            speed={3}
-            roughness={0.1}
-            metalness={0.9}
-          />
-        </Sphere>
-      </Float>
-
-      <Float speed={1.8} rotationIntensity={0.4} floatIntensity={0.6}>
-        <Sphere args={[0.5, 32, 32]} position={[-1.5, -1.5, 1]}>
-          <MeshDistortMaterial
-            color="#ec4899"
+            color="#f43f5e"
             attach="material"
             distort={0.2}
-            speed={2.5}
-            roughness={0.15}
-            metalness={0.85}
+            speed={1.8}
+            roughness={0.25}
+            metalness={0.75}
           />
         </Sphere>
       </Float>
 
-      <Stars radius={50} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
+      <Stars radius={40} depth={40} count={2000} factor={3} saturation={0} fade speed={0.8} />
       <Environment preset="night" />
     </>
   )
 }
 
-const ProjectsScene = () => {
-  const groupRef = useRef()
-
-  useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = state.clock.elapsedTime * 0.1
-    }
-  })
-
-  const projects = [
-    { position: [-3, 0, 0], color: '#6366f1' },
-    { position: [0, 0, -2], color: '#a855f7' },
-    { position: [3, 0, 0], color: '#ec4899' },
-  ]
-
-  return (
-    <group ref={groupRef}>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[5, 5, 5]} intensity={0.8} color="#6366f1" />
-      
-      {projects.map((p, i) => (
-        <Float key={i} speed={1.5 + i * 0.3} rotationIntensity={0.2} floatIntensity={0.3}>
-          <mesh position={p.position}>
-            <boxGeometry args={[1.8, 1.2, 0.1]} />
-            <meshStandardMaterial 
-              color={p.color} 
-              metalness={0.7} 
-              roughness={0.3}
-              transparent
-              opacity={0.9}
-            />
-          </mesh>
-        </Float>
-      ))}
-    </group>
-  )
-}
-
 const LoadingScreen = () => (
   <motion.div
-    className="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0a0f]"
+    className="fixed inset-0 z-50 flex items-center justify-center bg-[#0c0c10]"
     initial={{ opacity: 1 }}
     exit={{ opacity: 0 }}
-    transition={{ duration: 0.8, ease: 'easeInOut' }}
+    transition={{ duration: 0.6, ease: 'easeInOut' }}
   >
     <div className="text-center">
       <motion.div
-        className="w-16 h-16 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full mx-auto mb-6"
+        className="w-12 h-12 border-2 border-orange-500/20 border-t-orange-500 rounded-full mx-auto mb-5"
         animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
       />
       <motion.p
-        className="text-xl text-gray-400 font-mono"
+        className="text-sm text-gray-500 font-mono tracking-widest uppercase"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.2 }}
       >
-        Loading Experience...
+        Initializing
       </motion.p>
     </div>
   </motion.div>
@@ -134,365 +94,380 @@ const Navbar = ({ activeSection }) => {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', handleScroll)
+    const handleScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const links = ['Home', 'About', 'Projects', 'Skills', 'Contact']
+  const links = [
+    { label: 'Work', id: 'projects' },
+    { label: 'About', id: 'about' },
+    { label: 'Skills', id: 'skills' },
+    { label: 'Contact', id: 'contact' },
+  ]
 
   return (
     <motion.nav
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
-        scrolled ? 'glass py-3' : 'py-6'
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-700 ${
+        scrolled ? 'backdrop-blur-xl bg-[#0c0c10]/80 border-b border-white/5' : 'bg-transparent'
       }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
         <motion.a
           href="#home"
-          className="text-2xl font-bold gradient-text"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="text-lg font-semibold tracking-tight text-white"
+          whileHover={{ opacity: 0.8 }}
+          transition={{ duration: 0.2 }}
         >
-          PaongLabs
+          farhan<span className="text-orange-500">.</span>
         </motion.a>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-1">
           {links.map((link) => (
-            <motion.a
-              key={link}
-              href={`#${link.toLowerCase()}`}
-              className={`text-sm font-medium transition-colors duration-300 ${
-                activeSection === link.toLowerCase()
-                  ? 'text-indigo-400'
-                  : 'text-gray-400 hover:text-white'
+            <a
+              key={link.id}
+              href={`#${link.id}`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
+                activeSection === link.id
+                  ? 'text-orange-400 bg-orange-500/10'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
-              whileHover={{ y: -2 }}
             >
-              {link}
-            </motion.a>
+              {link.label}
+            </a>
           ))}
         </div>
 
         <motion.a
-          href="#contact"
-          className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full text-sm font-medium text-white"
-          whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(99, 102, 241, 0.5)' }}
-          whileTap={{ scale: 0.95 }}
+          href="https://github.com/farhanturu"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-300 border border-white/10 rounded-lg hover:border-white/20 hover:text-white transition-all duration-300"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          Let's Talk
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          GitHub
         </motion.a>
       </div>
     </motion.nav>
   )
 }
 
-const Section = ({ children, className = '', id }) => (
-  <section id={id} className={`relative min-h-screen py-24 ${className}`}>
-    {children}
-  </section>
-)
-
 const Hero = () => (
-  <Section id="home" className="flex items-center">
+  <section id="home" className="relative min-h-screen flex items-center">
     <div className="absolute inset-0 -z-10">
-      <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+      <Canvas camera={{ position: [0, 0, 6], fov: 55 }}>
         <Suspense fallback={null}>
           <HeroScene />
         </Suspense>
       </Canvas>
     </div>
 
-    <div className="max-w-7xl mx-auto px-6 w-full pt-24">
-      <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <div className="absolute inset-0 -z-[5] bg-gradient-to-b from-transparent via-transparent to-[#0c0c10]" />
+
+    <div className="max-w-6xl mx-auto px-6 w-full pt-20">
+      <div className="max-w-3xl">
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
         >
-          <motion.p
-            className="text-indigo-400 font-mono text-sm mb-4 tracking-wider"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            AI AGENT DEVELOPER
-          </motion.p>
-          
-          <motion.h1
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-          >
-            Building the{' '}
-            <span className="gradient-text">Future</span>
-            <br />
-            with <span className="gradient-text">AI</span>
-          </motion.h1>
-
-          <motion.p
-            className="text-gray-400 text-lg mb-8 max-w-xl leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            Crafting intelligent systems, autonomous agents, and cutting-edge 
-            AI solutions that push the boundaries of what's possible.
-          </motion.p>
-
-          <motion.div
-            className="flex flex-wrap gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <motion.a
-              href="#projects"
-              className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full font-medium text-white"
-              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(99, 102, 241, 0.5)' }}
-              whileTap={{ scale: 0.95 }}
-            >
-              View Projects
-            </motion.a>
-            <motion.a
-              href="#contact"
-              className="px-8 py-4 glass rounded-full font-medium text-white border border-white/10"
-              whileHover={{ scale: 1.05, borderColor: 'rgba(255,255,255,0.3)' }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Get in Touch
-            </motion.a>
-          </motion.div>
+          <span className="inline-block px-3 py-1 text-xs font-medium tracking-wider uppercase text-orange-400 bg-orange-500/10 rounded-full mb-6 border border-orange-500/20">
+            AI Agent Developer
+          </span>
         </motion.div>
 
-        <motion.div
-          className="hidden lg:block"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6, duration: 1 }}
+        <motion.h1
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1] tracking-tight"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
         >
+          I build things
+          <br />
+          that{' '}
+          <span className="text-orange-500">think</span>
+        </motion.h1>
+
+        <motion.p
+          className="text-gray-400 text-base sm:text-lg mb-10 max-w-lg leading-relaxed"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
+        >
+          Developer focused on AI automation, intelligent agents, and tools that make complex workflows feel simple.
+        </motion.p>
+
+        <motion.div
+          className="flex flex-wrap gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.7 }}
+        >
+          <motion.a
+            href="#projects"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-medium rounded-xl text-sm"
+            whileHover={{ scale: 1.03, backgroundColor: '#ea580c' }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+          >
+            See my work
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </motion.a>
+          <motion.a
+            href="#contact"
+            className="inline-flex items-center gap-2 px-6 py-3 text-gray-300 font-medium rounded-xl text-sm border border-white/10 hover:border-white/20 hover:text-white transition-all duration-300"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            Get in touch
+          </motion.a>
         </motion.div>
       </div>
     </div>
-  </Section>
+
+    <motion.div
+      className="absolute bottom-10 left-1/2 -translate-x-1/2"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.2, duration: 0.8 }}
+    >
+      <motion.div
+        className="w-5 h-8 border-2 border-white/20 rounded-full flex justify-center pt-1.5"
+        animate={{ opacity: [0.3, 0.7, 0.3] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <motion.div
+          className="w-1 h-2 bg-white/40 rounded-full"
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </motion.div>
+    </motion.div>
+  </section>
 )
 
-const About = () => {
-  const stats = [
-    { number: '50+', label: 'AI Projects' },
-    { number: '30+', label: 'Happy Clients' },
-    { number: '5+', label: 'Years Experience' },
-    { number: '24/7', label: 'Available' },
-  ]
-
-  return (
-    <Section id="about" className="mesh-gradient">
-      <div className="max-w-7xl mx-auto px-6">
+const About = () => (
+  <section id="about" className="py-32 relative">
+    <div className="max-w-6xl mx-auto px-6">
+      <div className="grid lg:grid-cols-5 gap-16">
         <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          className="lg:col-span-2"
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p className="text-indigo-400 font-mono text-sm mb-4 tracking-wider">ABOUT ME</p>
-          <h2 className="text-4xl md:text-5xl font-bold">
-            Passionate about <span className="gradient-text">AI Innovation</span>
-          </h2>
+          <h2 className="text-sm font-medium tracking-wider uppercase text-gray-500 mb-4">About</h2>
+          <p className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+            Developer, builder,
+            <br />
+            <span className="text-orange-500">problem solver.</span>
+          </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="text-gray-300 text-lg leading-relaxed mb-6">
-              I'm an AI Agent Developer at PaongLabs, specializing in building intelligent 
-              systems that automate complex workflows and create seamless user experiences.
-            </p>
-            <p className="text-gray-400 leading-relaxed mb-6">
-              From developing autonomous trading bots to creating advanced AI agents, 
-              I bring ideas to life with cutting-edge technology. My passion lies in 
-              pushing the boundaries of what AI can achieve.
-            </p>
-            <p className="text-gray-400 leading-relaxed">
-              When I'm not coding, you'll find me exploring new AI frameworks, 
-              contributing to open-source projects, and sharing knowledge with the 
-              developer community.
-            </p>
+        <motion.div
+          className="lg:col-span-3 space-y-6"
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        >
+          <p className="text-gray-300 text-base leading-relaxed">
+            I'm Farhan, an AI agent developer building at the intersection of automation and intelligence. I create systems that don't just execute tasks, they understand context.
+          </p>
+          <p className="text-gray-400 text-base leading-relaxed">
+            From autonomous trading bots to intelligent assistants, I've shipped tools that handle complexity so humans don't have to. My work spans Python, TypeScript, React, and whatever else gets the job done.
+          </p>
+          <p className="text-gray-400 text-base leading-relaxed">
+            Currently focused on AI agent architectures, tool-use patterns, and making machine intelligence actually useful.
+          </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              {['Python', 'TypeScript', 'React', 'Node.js', 'AI/ML', 'Automation'].map((tag) => (
-                <span key={tag} className="px-4 py-2 glass rounded-full text-sm text-gray-300">
+          <div className="pt-4 flex flex-wrap gap-2">
+            {['Python', 'TypeScript', 'React', 'Node.js', 'Go', 'AI/ML', 'Docker', 'PostgreSQL'].map((tag) => (
+              <span key={tag} className="px-3 py-1.5 text-xs font-medium text-gray-400 bg-white/5 rounded-lg border border-white/5">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  </section>
+)
+
+const projects = [
+  {
+    title: 'absensi-demo',
+    description: 'Employee attendance system with full backend and interactive demo interface.',
+    tags: ['Python', 'React', 'API'],
+    link: 'https://github.com/farhanturu/absensi-demo',
+    accent: 'bg-orange-500',
+  },
+  {
+    title: 'termfolio',
+    description: 'Terminal-based portfolio templates for developers who live in the CLI.',
+    tags: ['TypeScript', 'Node.js', 'CLI'],
+    link: 'https://github.com/farhanturu/termfolio',
+    accent: 'bg-cyan-500',
+  },
+  {
+    title: 'ai-skills-hub',
+    description: 'Collection of 15+ AI agent skills for automation and productivity workflows.',
+    tags: ['AI', 'Automation', 'Agents'],
+    link: 'https://github.com/farhanturu/ai-skills-hub',
+    accent: 'bg-rose-500',
+  },
+  {
+    title: 'vibe-toolkit',
+    description: 'Developer toolkit with 10+ utilities for modern web development.',
+    tags: ['TypeScript', 'React', 'Tools'],
+    link: 'https://github.com/farhanturu/vibe-toolkit',
+    accent: 'bg-violet-500',
+  },
+]
+
+const Projects = () => (
+  <section id="projects" className="py-32 relative">
+    <div className="max-w-6xl mx-auto px-6">
+      <motion.div
+        className="mb-16"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-100px' }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <h2 className="text-sm font-medium tracking-wider uppercase text-gray-500 mb-4">Projects</h2>
+        <p className="text-3xl sm:text-4xl font-bold tracking-tight">
+          Things I've <span className="text-orange-500">built</span>
+        </p>
+      </motion.div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        {projects.map((project, i) => (
+          <motion.a
+            key={project.title}
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all duration-500"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.08 }}
+            whileHover={{ y: -4 }}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className={`w-2 h-2 rounded-full ${project.accent}`} />
+              <svg className="w-4 h-4 text-gray-600 group-hover:text-orange-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-orange-400 transition-colors duration-300">{project.title}</h3>
+            <p className="text-sm text-gray-400 mb-4 leading-relaxed">{project.description}</p>
+            <div className="flex flex-wrap gap-1.5">
+              {project.tags.map((tag) => (
+                <span key={tag} className="px-2 py-0.5 text-[11px] font-medium text-gray-500 bg-white/5 rounded">
                   {tag}
                 </span>
               ))}
             </div>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-2 gap-6"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            {stats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                className="glass rounded-2xl p-6 text-center"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ scale: 1.05, borderColor: 'rgba(99, 102, 241, 0.3)' }}
-              >
-                <div className="text-3xl font-bold gradient-text mb-2">{stat.number}</div>
-                <div className="text-gray-400 text-sm">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+          </motion.a>
+        ))}
       </div>
-    </Section>
-  )
-}
 
-const Projects = () => {
-  const projects = [
-    {
-      title: 'AI Trading Bot',
-      description: 'Autonomous trading system using machine learning for market prediction and execution.',
-      tags: ['Python', 'TensorFlow', 'API'],
-      color: 'from-indigo-500 to-purple-500',
-    },
-    {
-      title: 'Smart Assistant Agent',
-      description: 'Intelligent AI agent that automates daily tasks with natural language understanding.',
-      tags: ['OpenAI', 'LangChain', 'React'],
-      color: 'from-purple-500 to-pink-500',
-    },
-    {
-      title: 'Data Analytics Platform',
-      description: 'Real-time analytics dashboard with AI-powered insights and predictions.',
-      tags: ['Next.js', 'Python', 'ML'],
-      color: 'from-pink-500 to-rose-500',
-    },
-  ]
-
-  return (
-    <Section id="projects">
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+      <motion.div
+        className="mt-8 text-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.3 }}
+      >
+        <a
+          href="https://github.com/farhanturu?tab=repositories"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-orange-400 transition-colors duration-300"
         >
-          <p className="text-indigo-400 font-mono text-sm mb-4 tracking-wider">FEATURED WORK</p>
-          <h2 className="text-4xl md:text-5xl font-bold">
-            Selected <span className="gradient-text">Projects</span>
-          </h2>
+          View all repositories
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </motion.div>
+    </div>
+  </section>
+)
+
+const skills = [
+  { name: 'Python', level: 92 },
+  { name: 'TypeScript', level: 88 },
+  { name: 'React / Next.js', level: 85 },
+  { name: 'Node.js', level: 82 },
+  { name: 'Go', level: 70 },
+  { name: 'AI / ML', level: 90 },
+  { name: 'Docker', level: 80 },
+  { name: 'PostgreSQL', level: 78 },
+]
+
+const Skills = () => (
+  <section id="skills" className="py-32 relative">
+    <div className="max-w-6xl mx-auto px-6">
+      <div className="grid lg:grid-cols-2 gap-16">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <h2 className="text-sm font-medium tracking-wider uppercase text-gray-500 mb-4">Skills</h2>
+          <p className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-6">
+            Tech I work with
+            <br />
+            <span className="text-orange-500">daily.</span>
+          </p>
+          <p className="text-gray-400 text-base leading-relaxed max-w-md">
+            Building AI agents requires a broad stack. Here's what I reach for most.
+          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {projects.map((project, i) => (
-            <motion.div
-              key={project.title}
-              className="group glass rounded-2xl overflow-hidden"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
-              whileHover={{ y: -10 }}
-            >
-              <div className={`h-48 bg-gradient-to-br ${project.color} relative overflow-hidden`}>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-20 h-20 border-2 border-white/30 rounded-xl rotate-12 group-hover:rotate-0 transition-transform duration-500" />
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">{project.title}</h3>
-                <p className="text-gray-400 text-sm mb-4 leading-relaxed">{project.description}</p>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="px-3 py-1 bg-white/5 rounded-full text-xs text-gray-300">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </Section>
-  )
-}
-
-const Skills = () => {
-  const skills = [
-    { name: 'AI/ML', level: 95, icon: '🤖' },
-    { name: 'Python', level: 90, icon: '🐍' },
-    { name: 'TypeScript', level: 85, icon: '📘' },
-    { name: 'React/Next.js', level: 88, icon: '⚛️' },
-    { name: 'Automation', level: 92, icon: '⚡' },
-    { name: 'API Design', level: 87, icon: '🔌' },
-  ]
-
-  return (
-    <Section id="skills" className="mesh-gradient">
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <p className="text-indigo-400 font-mono text-sm mb-4 tracking-wider">EXPERTISE</p>
-          <h2 className="text-4xl md:text-5xl font-bold">
-            Technical <span className="gradient-text">Skills</span>
-          </h2>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-5">
           {skills.map((skill, i) => (
             <motion.div
               key={skill.name}
-              className="glass rounded-2xl p-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ scale: 1.02 }}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.06 }}
             >
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-2xl">{skill.icon}</span>
-                <span className="font-medium">{skill.name}</span>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-gray-300">{skill.name}</span>
+                <span className="text-xs text-gray-600 font-mono">{skill.level}%</span>
               </div>
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+                  className="h-full bg-orange-500 rounded-full"
                   initial={{ width: 0 }}
                   whileInView={{ width: `${skill.level}%` }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1, delay: i * 0.1, ease: 'easeOut' }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: i * 0.08 }}
                 />
               </div>
-              <div className="text-right text-sm text-gray-400 mt-2">{skill.level}%</div>
             </motion.div>
           ))}
         </div>
       </div>
-    </Section>
-  )
-}
+    </div>
+  </section>
+)
 
 const Contact = () => {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' })
@@ -506,92 +481,113 @@ const Contact = () => {
   }
 
   return (
-    <Section id="contact">
-      <div className="max-w-4xl mx-auto px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <p className="text-indigo-400 font-mono text-sm mb-4 tracking-wider">GET IN TOUCH</p>
-          <h2 className="text-4xl md:text-5xl font-bold">
-            Let's <span className="gradient-text">Collaborate</span>
-          </h2>
-        </motion.div>
+    <section id="contact" className="py-32 relative">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-16">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h2 className="text-sm font-medium tracking-wider uppercase text-gray-500 mb-4">Contact</h2>
+            <p className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-6">
+              Let's work
+              <br />
+              <span className="text-orange-500">together.</span>
+            </p>
+            <p className="text-gray-400 text-base leading-relaxed max-w-md mb-8">
+              Got an AI project in mind? Need automation built? Or just want to chat about tech?
+            </p>
 
-        <motion.form
-          onSubmit={handleSubmit}
-          className="glass rounded-3xl p-8 md:p-12"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div className="space-y-4">
+              <a
+                href="https://github.com/farhanturu"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors duration-300"
+              >
+                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-sm font-medium">GitHub</div>
+                  <div className="text-xs text-gray-500">github.com/farhanturu</div>
+                </div>
+              </a>
+            </div>
+          </motion.div>
+
+          <motion.form
+            onSubmit={handleSubmit}
+            className="space-y-5"
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          >
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Name</label>
+              <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Name</label>
               <input
                 type="text"
                 value={formState.name}
                 onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl text-white text-sm placeholder-gray-600 focus:border-orange-500/50 focus:outline-none transition-all duration-300"
                 placeholder="Your name"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Email</label>
+              <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Email</label>
               <input
                 type="email"
                 value={formState.email}
                 onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none transition-colors"
-                placeholder="your@email.com"
+                className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl text-white text-sm placeholder-gray-600 focus:border-orange-500/50 focus:outline-none transition-all duration-300"
+                placeholder="you@example.com"
                 required
               />
             </div>
-          </div>
-          <div className="mb-6">
-            <label className="block text-sm text-gray-400 mb-2">Message</label>
-            <textarea
-              value={formState.message}
-              onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-              rows={5}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none transition-colors resize-none"
-              placeholder="Tell me about your project..."
-              required
-            />
-          </div>
-          <motion.button
-            type="submit"
-            className="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl font-medium text-white"
-            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(99, 102, 241, 0.5)' }}
-            whileTap={{ scale: 0.98 }}
-          >
-            {submitted ? 'Message Sent!' : 'Send Message'}
-          </motion.button>
-        </motion.form>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Message</label>
+              <textarea
+                value={formState.message}
+                onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                rows={4}
+                className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl text-white text-sm placeholder-gray-600 focus:border-orange-500/50 focus:outline-none transition-all duration-300 resize-none"
+                placeholder="Tell me about your project..."
+                required
+              />
+            </div>
+            <motion.button
+              type="submit"
+              className="w-full py-3.5 bg-orange-500 text-white font-medium rounded-xl text-sm hover:bg-orange-600 transition-colors duration-300"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+            >
+              {submitted ? 'Sent!' : 'Send Message'}
+            </motion.button>
+          </motion.form>
+        </div>
       </div>
-    </Section>
+    </section>
   )
 }
 
 const Footer = () => (
-  <footer className="py-12 border-t border-white/5">
-    <div className="max-w-7xl mx-auto px-6">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="text-2xl font-bold gradient-text">PaongLabs</div>
-        <div className="flex items-center gap-6">
-          <a href="https://github.com/paong" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-            GitHub
-          </a>
-          <a href="https://t.me/paonglabs" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-            Telegram
-          </a>
-        </div>
-        <p className="text-gray-500 text-sm">
-          Crafted with AI by PaongLabs
-        </p>
+  <footer className="py-8 border-t border-white/5">
+    <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p className="text-xs text-gray-600">
+        Built by Farhan at PaongLabs
+      </p>
+      <div className="flex items-center gap-4">
+        <a href="https://github.com/farhanturu" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-white transition-colors duration-300">
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+        </a>
       </div>
     </div>
   </footer>
@@ -602,13 +598,13 @@ function App() {
   const [activeSection, setActiveSection] = useState('home')
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000)
+    const timer = setTimeout(() => setLoading(false), 1500)
     return () => clearTimeout(timer)
   }, [])
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'about', 'projects', 'skills', 'contact']
+      const sections = ['home', 'projects', 'about', 'skills', 'contact']
       const scrollPos = window.scrollY + window.innerHeight / 3
 
       for (const section of sections) {
@@ -624,7 +620,7 @@ function App() {
       }
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -638,12 +634,12 @@ function App() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6 }}
         >
           <Navbar activeSection={activeSection} />
           <Hero />
-          <About />
           <Projects />
+          <About />
           <Skills />
           <Contact />
           <Footer />
